@@ -9,13 +9,9 @@ def moverPedidos():
     mainWindow.withdraw()
     ventanaPedido()
  
-def fromVentasToMain():
-    ventasWindow.withdraw()
-    main() 
-    
-def fromPedidoToMain():
-    pedidoWindow.withdraw()
-    main()  
+def getBack(currentScreen):
+    currentScreen.withdraw()
+    mainWindow.deiconify() 
 
 def moverVentas():
     mainWindow.withdraw()
@@ -23,14 +19,21 @@ def moverVentas():
 
 def main():
     global mainWindow
+    
     mainWindow = Tk()
-    mainWindow.geometry('400x400')
+    mainWindow.config( bg = 'white')
     
-    pedidos = Button( mainWindow, text = 'Hacer Pedido',font = ('Aptos', 20, 'bold'),  command= moverPedidos)
-    ventas = Button(mainWindow, text = 'Revisar ventas', font = ('Aptos', 20 , 'bold'), command= moverVentas)
+    logo = Image.open('C:/Users/PC/Desktop/.UGRR/PYTHON/me/local//logo.jpeg').resize( (500, 500))
+    logoTk = ImageTk.PhotoImage(logo)
+    logoLabel = Label(mainWindow, image= logoTk)
     
-    pedidos.pack(pady = 20 )
-    ventas.pack(pady = 20)
+    pedidos = Button( mainWindow, text = 'HACER PEDIDOS',border = 4, font = ('Aptos', 20, 'bold'), padx = 5,  command= moverPedidos)
+    ventas = Button(mainWindow, text = 'REVISAR VENTAS',border = 4, font = ('Aptos', 20 , 'bold'), command= moverVentas)
+    
+    
+    logoLabel.pack(padx = 20 , pady = 20 , side= 'left')
+    pedidos.pack(pady = 20 , padx= 20 )
+    ventas.pack(pady = 20, padx = 20)
     
     mainWindow.mainloop()
     
@@ -51,7 +54,7 @@ def ventanaVentas():
         
     Query.getAll(tree_all)
     
-    regresarBoton = Button(ventasWindow, text = 'REGRESAR', font= ('Aptos',16, 'bold'), command= fromVentasToMain)
+    regresarBoton = Button(ventasWindow, text = 'REGRESAR', font= ('Aptos',16, 'bold'), command= lambda:  getBack(ventasWindow))
     
     
     #empaquetado de los widgets a la ventana
@@ -80,39 +83,39 @@ def ventanaPedido():
     bebidasLabel = Label(pedidoWindow, text = 'BEBIDAS', font= ('Aptos', 18,'bold'), bg = 'AliceBlue')
     
     #botones para agregar molotes
-    normalBoton = Button(pedidoWindow, text = 'NORMAL', font= ('Aptos', 14,'bold'), command= lambda: updateCar(moloteNormal),border= 4)
-    mixtoBoton = Button(pedidoWindow, text = 'MIXTO', font= ('Aptos', 14,'bold'), command= lambda: updateCar(moloteMixto), border= 4)
+    normalBoton = Button(pedidoWindow, text = 'NORMAL', font= ('Aptos', 14,'bold'),padx  =10 ,  command= lambda: updateCar(moloteNormal),border= 4)
+    mixtoBoton = Button(pedidoWindow, text = 'MIXTO', font= ('Aptos', 14,'bold'),padx = 30 ,command= lambda: updateCar(moloteMixto), border= 4)
     
     #botones para agregar tostadas
-    tingaBoton = Button(pedidoWindow, text = 'TINGA', font= ('Aptos', 14,'bold'), command= lambda: updateCar(tostadaTinga), border= 4)
-    pataBoton  = Button(pedidoWindow, text = 'PATA', font= ('Aptos', 14,'bold'), command= lambda: updateCar(tostadaPata), border = 4)
+    tingaBoton = Button(pedidoWindow, text = 'TINGA', font= ('Aptos', 14,'bold'),padx = 30 ,  command= lambda: updateCar(tostadaTinga), border= 4)
+    pataBoton  = Button(pedidoWindow, text = 'PATA', font= ('Aptos', 14,'bold'),padx = 30 , command= lambda: updateCar(tostadaPata), border = 4)
     
     #boton para agregar bebidas
     refresco = Button(pedidoWindow, text  = 'REFRESCO', font= ('Aptos', 14,'bold'), command= lambda: updateCar(bebidaMedio), border = 4)
-    cafe = Button(pedidoWindow, text  = 'CAFÉ', font= ('Aptos', 14,'bold'), command= lambda: updateCar(coffee), border = 4)
+    cafe = Button(pedidoWindow, text  = 'CAFÉ', font= ('Aptos', 14,'bold'), padx = 30 , command= lambda: updateCar(coffee), border = 4)
     
     guardarBoton =  Button(pedidoWindow, text  = 'GUARDAR', font= ('Aptos', 16, 'bold'), padx = 14 , border = 4,  command= save)
-    regresarBoton = Button(pedidoWindow, text  = 'REGRESAR', font= ('Aptos', 16, 'bold'), padx = 14 , border = 4,  command= fromPedidoToMain)
+    regresarBoton = Button(pedidoWindow, text  = 'REGRESAR', font= ('Aptos', 16, 'bold'), padx = 8, border = 4,  command= lambda: getBack(pedidoWindow))
 
     #empaquetado de los widgets de la pantalla
     mainLabel.grid(row  = 0 , column= 1, columnspan= 3, pady = 10 ,sticky= 'W')
     
     frame.grid(row=1, column= 3, rowspan= 6, padx= 20 , pady = 20 )
     
-    molotesLabel.grid( row = 1, column= 0 ,padx =20  , pady = 2)
+    molotesLabel.grid( row = 1, column= 0 ,padx =20  , pady = 2, columnspan= 2)
     normalBoton.grid(row = 2, column= 0 , padx = 20 , pady = 2)
     mixtoBoton.grid(row = 2, column= 1, padx = 20 ,pady = 2)
     
-    tostadasLabel.grid(row = 3, column= 0 ,padx = 20 , pady = 2  )
+    tostadasLabel.grid(row = 3, column= 0 ,padx = 20 , pady = 2 , columnspan=2 )
     tingaBoton.grid(row = 4, column= 0, padx = 20 , pady= 2 )
     pataBoton.grid(row= 4, column= 1, padx = 20 , pady = 2)
     
-    bebidasLabel.grid( row = 5, column= 0 , padx = 20 , pady = 2)
+    bebidasLabel.grid( row = 5, column= 0 , padx = 20 , pady = 2, columnspan= 2)
     refresco.grid( row = 6, column= 0, padx = 20 , pady = 2)
     cafe.grid(row = 6, column=1 , padx = 20 , pady = 2)
     
     guardarBoton.grid(row = 7 , column= 0, pady = 20,sticky= 'E')
-    regresarBoton.grid (row = 7, column= 1, pady= 20 , sticky='E')
+    regresarBoton.grid (row = 7, column= 1,padx = 10 , pady= 20 , sticky='E')
 
     pedidoWindow.mainloop()
     
