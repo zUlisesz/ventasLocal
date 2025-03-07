@@ -1,4 +1,6 @@
 from tkinter import *
+from queries import Query
+from tkinter.ttk import Treeview
 from producto import Producto
 from pedido import Pedido
 from PIL import Image, ImageTk
@@ -6,10 +8,18 @@ from PIL import Image, ImageTk
 def moverPedidos():
     mainWindow.withdraw()
     ventanaPedido()
+ 
+def fromVentasToMain():
+    ventasWindow.withdraw()
+    main() 
     
+def fromPedidoToMain():
+    pedidoWindow.withdraw()
+    main()  
 
 def moverVentas():
-    pass
+    mainWindow.withdraw()
+    ventanaVentas()
 
 def main():
     global mainWindow
@@ -24,40 +34,65 @@ def main():
     
     mainWindow.mainloop()
     
+def ventanaVentas():
+    global ventasWindow
+    ventasWindow = Toplevel()
+    frame_all = LabelFrame(ventasWindow, text="Todos los Pedidos")
+    frame_all.pack( expand= 'yes' , padx=10, pady=10)
+    
+    columns = ("id", "Molote normal", "Molote mixto", "Tostada tinga", "Tostada Pata", "Refresco", "Café", "Fecha", "Cuenta")
+    
+    tree_all = Treeview(frame_all, columns= columns, show='headings')
+    tree_all.pack(fill="both", expand="yes")
+    
+    for col in tree_all["columns"]:
+        tree_all.heading(col, text=col.upper())
+        tree_all.column(col, width= 120)
+        
+    Query.getAll(tree_all)
+    
+    regresarBoton = Button(ventasWindow, text = 'REGRESAR', font= ('Aptos',16, 'bold'), command= fromVentasToMain)
+    
+    
+    #empaquetado de los widgets a la ventana
+    regresarBoton.pack(pady = 10 , padx= 10)
+    
+    ventasWindow.mainloop()
     
 def ventanaPedido(): 
         
-    global ventasWindow, carritoLabel
+    global  carritoLabel, pedidoWindow
+    pedidoWindow = Toplevel()
     
-    ventasWindow = Toplevel()
-    ventasWindow.title('Main')
-    ventasWindow.config(bg = "AliceBlue")
-    ventasWindow.resizable(width= False , height= False)
+    pedidoWindow.title('Main')
+    pedidoWindow.config(bg = "AliceBlue")
+    pedidoWindow.resizable(width= False , height= False)
     
     #frame para imprimir la cuenta
-    frame = LabelFrame(ventasWindow, text = 'CUENTA TOTAL', padx = 70, pady = 80, border= 4,)
+    frame = LabelFrame(pedidoWindow, text = 'CUENTA TOTAL', padx = 70, pady = 80, border= 4,)
     carritoLabel = Label(frame, text= Pedido.elementosCarrito(carrito), font= ('bold') )
     carritoLabel.pack()
     
     #letreros 
-    mainLabel = Label(ventasWindow, text = 'CREANDO PEDIDO', font= ('Aptos', 26, 'bold'), bg = 'AliceBlue')
-    molotesLabel = Label(ventasWindow , text = 'MOLOTES', font= ( 'Aptos', 18,'bold'), bg = 'AliceBlue')
-    tostadasLabel = Label(ventasWindow, text= 'TOSTADAS',font= ('Aptos', 18,'bold'), bg = 'AliceBlue')
-    bebidasLabel = Label(ventasWindow, text = 'BEBIDAS', font= ('Aptos', 18,'bold'), bg = 'AliceBlue')
+    mainLabel = Label(pedidoWindow, text = 'CREANDO PEDIDO', font= ('Aptos', 26, 'bold'), bg = 'AliceBlue')
+    molotesLabel = Label(pedidoWindow , text = 'MOLOTES', font= ( 'Aptos', 18,'bold'), bg = 'AliceBlue')
+    tostadasLabel = Label(pedidoWindow, text= 'TOSTADAS',font= ('Aptos', 18,'bold'), bg = 'AliceBlue')
+    bebidasLabel = Label(pedidoWindow, text = 'BEBIDAS', font= ('Aptos', 18,'bold'), bg = 'AliceBlue')
     
     #botones para agregar molotes
-    normalBoton = Button(ventasWindow, text = 'NORMAL', font= ('Aptos', 14,'bold'), command= lambda: updateCar(moloteNormal),border= 4)
-    mixtoBoton = Button(ventasWindow, text = 'MIXTO', font= ('Aptos', 14,'bold'), command= lambda: updateCar(moloteMixto), border= 4)
+    normalBoton = Button(pedidoWindow, text = 'NORMAL', font= ('Aptos', 14,'bold'), command= lambda: updateCar(moloteNormal),border= 4)
+    mixtoBoton = Button(pedidoWindow, text = 'MIXTO', font= ('Aptos', 14,'bold'), command= lambda: updateCar(moloteMixto), border= 4)
     
     #botones para agregar tostadas
-    tingaBoton = Button(ventasWindow, text = 'TINGA', font= ('Aptos', 14,'bold'), command= lambda: updateCar(tostadaTinga), border= 4)
-    pataBoton  = Button(ventasWindow, text = 'PATA', font= ('Aptos', 14,'bold'), command= lambda: updateCar(tostadaPata), border = 4)
+    tingaBoton = Button(pedidoWindow, text = 'TINGA', font= ('Aptos', 14,'bold'), command= lambda: updateCar(tostadaTinga), border= 4)
+    pataBoton  = Button(pedidoWindow, text = 'PATA', font= ('Aptos', 14,'bold'), command= lambda: updateCar(tostadaPata), border = 4)
     
     #boton para agregar bebidas
-    refresco = Button(ventasWindow, text  = 'REFRESCO', font= ('Aptos', 14,'bold'), command= lambda: updateCar(bebidaMedio), border = 4)
-    cafe = Button(ventasWindow, text  = 'CAFÉ', font= ('Aptos', 14,'bold'), command= lambda: updateCar(coffee), border = 4)
+    refresco = Button(pedidoWindow, text  = 'REFRESCO', font= ('Aptos', 14,'bold'), command= lambda: updateCar(bebidaMedio), border = 4)
+    cafe = Button(pedidoWindow, text  = 'CAFÉ', font= ('Aptos', 14,'bold'), command= lambda: updateCar(coffee), border = 4)
     
-    guardarBoton =  Button(ventasWindow, text  = 'GUARDAR', font= ('Aptos', 16, 'bold'), padx = 14 , border = 4,  command= save)
+    guardarBoton =  Button(pedidoWindow, text  = 'GUARDAR', font= ('Aptos', 16, 'bold'), padx = 14 , border = 4,  command= save)
+    regresarBoton = Button(pedidoWindow, text  = 'REGRESAR', font= ('Aptos', 16, 'bold'), padx = 14 , border = 4,  command= fromPedidoToMain)
 
     #empaquetado de los widgets de la pantalla
     mainLabel.grid(row  = 0 , column= 1, columnspan= 3, pady = 10 ,sticky= 'W')
@@ -77,18 +112,20 @@ def ventanaPedido():
     cafe.grid(row = 6, column=1 , padx = 20 , pady = 2)
     
     guardarBoton.grid(row = 7 , column= 0, pady = 20,sticky= 'E')
+    regresarBoton.grid (row = 7, column= 1, pady= 20 , sticky='E')
 
-    ventasWindow.mainloop()
+    pedidoWindow.mainloop()
     
 
 def save():
-    Pedido.sendPackage(carrito)
+    Query.sendPackage(carrito)
     Pedido.limpiarCarrrito(carrito)
     carritoLabel.config( text= Pedido.elementosCarrito(carrito))
 
 def updateCar(producto):
     Pedido.agg(producto)
     carritoLabel.config( text= Pedido.elementosCarrito(carrito))
+    
      
 moloteNormal = Producto('MoloteNormal', 13)
 moloteMixto = Producto('MoloteMixto', 15)
