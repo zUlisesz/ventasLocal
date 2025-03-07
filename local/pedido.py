@@ -66,3 +66,46 @@ class Pedido:
         finally:
             cursor.close()
             key.close()
+            
+    @staticmethod
+    def getAll():
+        key = Connection.connectBD()
+        
+        if key is None:
+            print("No se pudo establecer la conexión con la base de datos.")
+            return
+        
+        cursor = key.cursor()
+        
+        try:
+            cursor.execute("SELECT * FROM pedido")
+            myresult = cursor.fetchall()
+            
+            for x in myresult:
+                print(x)
+        except mysql.connector.Error as error:
+            print('Error: {}'.format(error))
+        finally:
+            cursor.close()
+            key.close()
+
+    @staticmethod
+    def getImportantInfo():
+        key = Connection.connectBD()
+        
+        if key is None:
+            print("No se pudo establecer la conexión con la base de datos.")
+            return
+        
+        cursor = key.cursor()
+        
+        try:
+            cursor.execute("SELECT id, fecha, cuenta_total FROM pedido")
+            myresult = cursor.fetchall()
+            return myresult
+            
+        except mysql.connector.Error as error:
+            print('Error: {}'.format(error))
+        finally:
+            cursor.close()
+            key.close()
